@@ -21,37 +21,51 @@ function onSearch(event) {
   const searchQuery = event.target.value;
   console.log(searchQuery);
 
+  if (searchQuery === '') {
+    refs.cardContainer.innerHTML = '';
+    return;
+  }
+
   refs.cardContainer.innerHTML = '';
 
-  API.fetchCountries(searchQuery).then(countries => {
-    if (countries.length > 10) {
-      error({
-        title: `Too many matches found.`,
-        text: `We found ${countries.length} countries. Please enter a more specific query!`,
-        styling: 'brighttheme',
-        delay: 2000,
-      });
-      return;
-    }
-    if (countries.status === 404) {
+  API.fetchCountries(searchQuery)
+    .then(countries => {
+      if (countries.status === 404) {
+        notice({
+          text: `Error: enter more correctly`,
+          styling: `brighttheme`,
+          delay: 2000,
+        });
+        return;
+      }
+      if (countries.length > 10) {
+        error({
+          title: `Too many matches found.`,
+          text: `We found ${countries.length} countries. Please enter a more specific query!`,
+          styling: 'brighttheme',
+          delay: 2000,
+        });
+        return;
+      }
+      if (countries.length > 1 && countries.length <= 10) {
+        const markupList = countriesListTpl(countries);
+        refs.cardContainer.insertAdjacentHTML('afterbegin', markupList);
+        return;
+      }
+      if (countries.length === 1) {
+        const markup = countryCardTpl(countries);
+        refs.cardContainer.insertAdjacentHTML('afterbegin', markup);
+        return;
+      }
+    })
+    .catch(() => {
       notice({
         text: `Error: enter more correctly`,
         styling: `brighttheme`,
         delay: 2000,
       });
       return;
-    }
-    if (countries.length > 1 && countries.length <= 10) {
-      const markupList = countriesListTpl(countries);
-      refs.cardContainer.insertAdjacentHTML('afterbegin', markupList);
-      return;
-    }
-    if (countries.length === 1) {
-      const markup = countryCardTpl(countries);
-      refs.cardContainer.insertAdjacentHTML('afterbegin', markup);
-      return;
-    }
-  });
+    });
 
   // if (!countries) {
   //   return;

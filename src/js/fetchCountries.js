@@ -5,17 +5,17 @@ const BASE_URL = 'https://restcountries.eu/rest/v2';
 
 function fetchCountries(searchQuery) {
   const url = `${BASE_URL}/name/${searchQuery}`;
-  return fetch(url)
-    .then(response => {
-      // if (!response.ok) {
-      //   error({ text: 'Country named does not exist' });
-      //   return;
-      // }
-      return response.json();
-    })
-    .catch(e => {
-      console.log(e);
-    });
+  return fetch(url).then(response => {
+    // if (!response.ok) {
+    // error({ text: 'Country named does not exist' });
+    // return;
+    // }
+    return response.json();
+  });
+  // .catch(e => {
+  //   error({ text: 'Country named does not exist' });
+  //   return;
+  // });
 }
 
 export default { fetchCountries };
